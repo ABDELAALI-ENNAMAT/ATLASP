@@ -385,17 +385,24 @@
                      || '';
 
             if (!sid) {
-                // No session — redirect immediately to upload
                 window.location.replace('/upload');
                 return;
             }
 
+            const qp = '?session_id=' + sid;
             const [dashData, registerData, gapsData, anomData] = await Promise.all([
-                fetchAPI('/dashboard' + (sid ? `?session_id=${sid}` : '')),
-                fetchAPI('/register' + (sid ? `?session_id=${sid}` : '')),
-                fetchAPI('/gaps' + (sid ? `?session_id=${sid}` : '')),
-                fetchAPI('/anomalies' + (sid ? `?session_id=${sid}` : ''))
+                fetchAPI('/dashboard' + qp),
+                fetchAPI('/register' + qp),
+                fetchAPI('/gaps' + qp),
+                fetchAPI('/anomalies' + qp)
             ]);
+
+            // Only redirect if the main dashboard call failed (session truly gone)
+            if (!dashData && !registerData && !gapsData && !anomData) {
+                localStorage.removeItem('atlas-session-id');
+                window.location.replace('/upload');
+                return;
+            }
 
             if (dashData) {
                 document.getElementById('kpi-risks').textContent =
