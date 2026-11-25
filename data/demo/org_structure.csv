@@ -1,0 +1,9 @@
+Department,Department_Head,Headcount,Annual_Budget_MAD,Reports_To,Location,Cost_Center_Code,Head_Email
+Administration,Ahmed Alami,15,4800000,CEO,Kenitra,CC-ADM-001,a.alami@meridian-cables.ma
+Finance,Karim Benjelloun,25,11500000,CEO,Kenitra,CC-FIN-002,k.benjelloun@meridian-cables.ma
+HR,Sara Tazi,20,7800000,CEO,Kenitra,CC-RH-003,s.tazi@meridian-cables.ma
+IT,Youssef Idrissi,30,14500000,CEO,Kenitra,CC-IT-004,y.idrissi@meridian-cables.ma
+Procurement,Mehdi Bennis,40,620000000,CEO,Kenitra,CC-ACH-005,m.bennis@meridian-cables.ma
+Production,Rachid El Fassi,3000,98000000,CEO,Kenitra,CC-PRD-006,r.elfassi@meridian-cables.ma
+Logistics,Omar Chraibi,800,33000000,CEO,Kenitra,CC-LOG-007,o.chraibi@meridian-cables.ma
+Sales,Mounia Bennani,50,24000000,CEO,Casablanca,CC-COM-008,m.bennani@meridian-cables.ma

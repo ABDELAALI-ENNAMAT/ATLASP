@@ -1,0 +1,39 @@
+{
+  "Procurement": {
+    "required_controls": [
+      "supplier concentration limit",
+      "single source approval process",
+      "three quote requirement",
+      "vendor performance review",
+      "contract renewal process",
+      "geographic diversification policy"
+    ]
+  },
+  "IT": {
+    "required_controls": [
+      "password complexity requirements",
+      "access management policy",
+      "data backup frequency",
+      "cloud security controls",
+      "remote access policy",
+      "incident response procedure",
+      "policy review cycle"
+    ]
+  },
+  "HR": {
+    "required_controls": [
+      "payroll reconciliation process",
+      "terminated employee access revocation",
+      "duplicate payment detection",
+      "segregation of duties payroll"
+    ]
+  },
+  "Finance": {
+    "required_controls": [
+      "approval authority matrix",
+      "journal entry review process",
+      "bank reconciliation frequency",
+      "expense report audit trail"
+    ]
+  }
+}

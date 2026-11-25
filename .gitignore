@@ -1,0 +1,49 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Environment ───────────────────────────────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Project-specific ──────────────────────────────────────────────────────────
+outputs/
+.agents/
+
+# ── Temp/utility scripts (not part of the application) ────────────────────────
+apply_fixes.py
+clean_icons.py
+export_code.py
+fix_layout.py
+full_cleanup.py
+inject_theme_event.py
+inject_topbars.py
+update_gaps.py
+update_html_files.py
+update_htmls.py
+validate_data.py
+verify_all.py
+rename_company.py
+atlas_all_code.txt
+atlas_full_codebase.txt
+output.txt

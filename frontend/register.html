@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATLAS - Risk Register</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    
+    <style>
+        .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .filter-btn { padding: 6px 12px; border: 1px solid var(--color-border); border-radius: var(--r-full); cursor: pointer; background: var(--color-surface); font-size: var(--text-sm); color: var(--color-text-muted); font-weight: 500; }
+        .filter-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+        .level-btn.active.crit { background: var(--risk-critical-fill); border-color: var(--risk-critical-fill); }
+        .level-btn.active.high { background: var(--risk-high-fill); border-color: var(--risk-high-fill); }
+        .level-btn.active.mod { background: var(--risk-moderate-fill); border-color: var(--risk-moderate-fill); }
+        .level-btn.active.low { background: var(--risk-low-fill); border-color: var(--risk-low-fill); }
+        
+        .search-input { padding: 6px 12px; border: 1px solid var(--color-border); border-radius: var(--r-full); font-size: var(--text-sm); width: 200px; outline: none; }
+        .search-input:focus { border-color: var(--border-focus); }
+        
+        .score-box { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 1px; }
+        
+        table tbody tr { cursor: pointer; }
+        
+        /* Slide-in Panel */
+        #side-panel {
+            position: fixed; top: 0; right: -400px; width: 360px; height: 100vh;
+            background: var(--color-surface); box-shadow: var(--shadow-lg);
+            border-left: 1px solid var(--color-border);
+            transition: transform 0.3s ease; z-index: 100;
+            display: flex; flex-direction: column;
+        }
+        #side-panel.open { transform: translateX(-400px); }
+        .panel-header { padding: 20px; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: flex-start; }
+        .panel-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
+        .panel-close:hover { color: var(--color-text); }
+        .panel-body { padding: 20px; overflow-y: auto; flex: 1; }
+        
+        .iia-block { margin-bottom: 16px; font-size: var(--text-sm); line-height: 1.5; color: var(--color-text-muted); }
+        .iia-label { font-weight: 600; color: var(--color-text); margin-bottom: 2px; display: block; font-size: var(--text-base); }
+    </style>
+    
+    <script src="/js/icons.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-label="ATLAS logo">
+      <rect width="32" height="32" rx="8" fill="var(--color-primary)" opacity="0.15"/>
+      <path d="M7 25 L16 7 L25 25" stroke="var(--color-primary)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="16" cy="21" r="2.5" fill="var(--color-primary)"/>
+      <path d="M11 25 L21 25" stroke="var(--color-primary)" stroke-width="2"
+            stroke-linecap="round" opacity="0.4"/>
+    </svg>
+    <div>
+      <div class="logo-text">ATLAS</div>
+      <div class="logo-sub">Risk Intelligence</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <!-- Analytics group -->
+    <div class="sidebar-label">Analytics</div>
+    <a href="/dashboard" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </a>
+    <a href="/heatmap" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="10" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="10" width="4" height="4"/><rect x="10" y="10" width="4" height="4"/><rect x="17" y="10" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/></svg>
+      Risk Heat Map
+    </a>
+    <a href="/register" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Risk Register
+    </a>
+
+    <!-- Finance group -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">Finance</div>
+    <a href="/exposure" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Financial Exposure
+    </a>
+    <a href="/anomalies" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+      Anomaly Detection
+    </a>
+
+    <!-- Audit group -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">Audit</div>
+    <a href="/gaps" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Control Gaps
+    </a>
+    <a href="/sampling" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>
+      Audit Sampling
+    </a>
+    <a href="/report" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+      Audit Report
+    </a>
+    <a href="/upload" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Data
+    </a>
+
+    <!-- Settings -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">System</div>
+    <a href="/settings" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Configuration
+    </a>
+  </div>
+
+  <!-- User footer -->
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="user-avatar">IA</div>
+      <div>
+        <div class="user-name">Internal Auditor</div>
+        <div class="user-role">Meridian Cables Maroc SA · FY 2024</div>
+      </div>
+    </div>
+  </div>
+</aside>
+        
+        
+        
+
+        <div class="main-area">
+        <header class="topbar">
+          <div class="topbar-left">
+            <div class="status-dot"></div>
+            <span class="topbar-title">Risk Register</span>
+          </div>
+          <div class="topbar-right">
+            <button class="btn btn-ghost btn-sm" onclick="window.location.href='/report'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export PDF
+            </button>
+            <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
+              <svg id="theme-icon" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div class="main-content">
+            <header class="page-header">
+                <div class="header-left">
+                    <div class="page-title">Risk Register</div>
+                    <div class="header-meta">
+                        <div class="meta-pill"><div class="meta-dot"></div> 24 risks · FY 2024</div>
+                        <div class="meta-pill"><div class="meta-dot"></div> Sorted by exposure</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <input type="text" class="search-input" id="searchBox" placeholder="Search risks...">
+                    <button class="btn btn-secondary" onclick="window.location.href='/api/register/export'">↓ Export</button>
+                </div>
+            </header>
+            
+            <div class="page-body">
+                <div class="filter-bar" id="filters">
+                    <button class="filter-btn cat-btn active" data-val="All">All Categories</button>
+                    <button class="filter-btn cat-btn" data-val="Operational">Operational</button>
+                    <button class="filter-btn cat-btn" data-val="Financial">Financial</button>
+                    <button class="filter-btn cat-btn" data-val="IT">IT</button>
+                    <button class="filter-btn cat-btn" data-val="Compliance">Compliance</button>
+                    <button class="filter-btn cat-btn" data-val="Fraud">Fraud</button>
+                    <button class="filter-btn cat-btn" data-val="Strategic">Strategic</button>
+                    <div style="width: 1px; height: 20px; background: var(--color-border); margin: 0 8px;"></div>
+                    <button class="filter-btn level-btn active" data-val="All">All Levels</button>
+                    <button class="filter-btn level-btn crit" data-val="Critical">Critical</button>
+                    <button class="filter-btn level-btn high" data-val="High">High</button>
+                    <button class="filter-btn level-btn mod" data-val="Moderate">Moderate</button>
+                    <button class="filter-btn level-btn low" data-val="Low">Low</button>
+                    <div style="margin-left: auto; font-size: var(--text-sm); color: var(--text-muted);" id="counter">Showing 24 of 24 risks</div>
+                </div>
+                
+                <div class="card" style="padding: 0;">
+                    <div class="table-wrapper" style="border: none;">
+                        <table id="reg-table">
+                            <thead>
+                                <tr><th>ID</th><th>Risk Name</th><th>COSO Component</th><th>Category</th><th>L</th><th>I</th><th>Score</th><th>Level</th><th style="text-align:right;">Exp. P50 (MAD)</th><th>Control</th></tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+        <!-- Slide-in Panel -->
+        <div id="side-panel">
+            <div class="panel-header">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span class="badge" id="panelId"></span>
+                        <h3 id="panelName" style="margin: 0; font-size: 1rem;"></h3>
+                    </div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <span class="badge badge-low" id="panelCat"></span>
+                        <span class="badge badge-moderate" id="panelCoso"></span>
+                    </div>
+                </div>
+                <button class="panel-close" onclick="closePanel()">×</button>
+            </div>
+            <div class="panel-body">
+                <div class="iia-block">
+                    <span class="iia-label"> Condition</span>
+                    <span id="panelCond"></span>
+                </div>
+                <div class="iia-block">
+                    <span class="iia-label"> Criteria</span>
+                    <span id="panelCrit"></span>
+                </div>
+                <div class="iia-block">
+                    <span class="iia-label"> Cause</span>
+                    <span id="panelCause"></span>
+                </div>
+                <div class="iia-block">
+                    <span class="iia-label"> Effect</span>
+                    <span id="panelEffect"></span>
+                </div>
+                <div class="iia-block">
+                    <span class="iia-label"> Recommendation</span>
+                    <span id="panelRec"></span>
+                </div>
+                <div class="divider"></div>
+                <div class="iia-block" style="font-family: 'JetBrains Mono', monospace; font-size: var(--text-sm);">
+                    <div style="display: flex; justify-content: space-between;"><span>P10 Min:</span><span id="panelP10"></span></div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; color: var(--color-text);"><span>P50 Expected:</span><span id="panelP50"></span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>P90 Max:</span><span id="panelP90"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script>
+        let allRisks = [];
+        let curCat = 'All';
+        let curLev = 'All';
+        let curSearch = '';
+        
+        function closePanel() {
+            document.getElementById('side-panel').classList.remove('open');
+        }
+        
+        function openPanel(r) {
+            const p = document.getElementById('side-panel');
+            p.classList.add('open');
+            
+            const badge = document.getElementById('panelId');
+            badge.innerText = r.risk_id;
+            badge.className = 'badge';
+            if(r.risk_level === 'Critical') badge.classList.add('badge-critical');
+            else if(r.risk_level === 'High') badge.classList.add('badge-high');
+            else if(r.risk_level === 'Moderate') badge.classList.add('badge-moderate');
+            else badge.classList.add('badge-low');
+            
+            document.getElementById('panelName').innerText = r.name;
+            document.getElementById('panelCat').innerText = r.category;
+            document.getElementById('panelCoso').innerText = r.coso_component;
+            
+            document.getElementById('panelCond').innerText = r.condition || "N/A";
+            document.getElementById('panelCrit').innerText = r.criteria || "N/A";
+            document.getElementById('panelCause').innerText = r.cause || "N/A";
+            document.getElementById('panelEffect').innerText = r.effect || "N/A";
+            document.getElementById('panelRec').innerText = r.recommendation || "N/A";
+            
+            document.getElementById('panelP10').innerText = r.min_exposure ? r.min_exposure.toLocaleString() + ' MAD' : 'N/A';
+            document.getElementById('panelP50').innerText = r.expected_exposure ? r.expected_exposure.toLocaleString() + ' MAD' : 'N/A';
+            document.getElementById('panelP90').innerText = r.max_exposure ? r.max_exposure.toLocaleString() + ' MAD' : 'N/A';
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('tbody');
+            tbody.innerHTML = '';
+            
+            const categoryColors = {
+              Operational: 'badge-low', Financial: 'badge-moderate', IT: 'badge-teal',
+              Compliance: 'badge-amber', Fraud: 'badge-critical', Strategic: 'badge-secondary'
+            };
+            
+            let count = 0;
+            
+            allRisks.forEach(r => {
+                if (curCat !== 'All' && r.category !== curCat) return;
+                if (curLev !== 'All' && r.risk_level !== curLev) return;
+                if (curSearch && !r.name.toLowerCase().includes(curSearch)) return;
+                
+                count++;
+                
+                let lvlColor = 'var(--risk-low-fill)';
+                let lvlBadge = 'badge-low';
+                if(r.risk_level === 'Moderate') { lvlColor = 'var(--risk-moderate-fill)'; lvlBadge = 'badge-moderate'; }
+                if(r.risk_level === 'High') { lvlColor = 'var(--risk-high-fill)'; lvlBadge = 'badge-high'; }
+                if(r.risk_level === 'Critical') { lvlColor = 'var(--risk-critical-fill)'; lvlBadge = 'badge-critical'; }
+                
+                const ctrlBadge = r.control_status === 'Strong' ? 'badge-low' : 
+                                  r.control_status === 'Weak' ? 'badge-moderate' : 'badge-critical';
+                const ctrl = r.control_status || 'None';
+                
+                const exp = r.expected_exposure ? r.expected_exposure.toLocaleString() : '-';
+                
+                const tr = document.createElement('tr');
+                tr.onclick = () => openPanel(r);
+                tr.innerHTML = `
+                    <td style="font-weight:600;">${r.risk_id}</td>
+                    <td style="font-weight:500;">${r.name}</td>
+                    <td style="font-size: var(--text-sm); color:var(--color-text-muted);">${r.coso_component}</td>
+                    <td><span class="badge ${categoryColors[r.category] || 'badge-low'}">${r.category}</span></td>
+                    <td>${r.likelihood}</td>
+                    <td>${r.impact}</td>
+                    <td><div class="score-box" style="background:${lvlColor};"></div>${r.risk_score}</td>
+                    <td><span class="badge ${lvlBadge}">${r.risk_level}</span></td>
+                    <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${exp}</td>
+                    <td><span class="badge ${ctrlBadge}">${ctrl}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('counter').innerText = `Showing ${count} of ${allRisks.length} risks`;
+        }
+        
+        document.addEventListener("DOMContentLoaded", async () => {
+            const sid = new URLSearchParams(window.location.search).get('session_id') || localStorage.getItem('atlas-session-id') || '';
+            allRisks = await fetchAPI('/register' + (sid ? `?session_id=${sid}` : '')) || [];
+            allRisks.sort((a,b) => b.expected_exposure - a.expected_exposure);
+            
+            renderTable();
+            
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    curCat = e.target.dataset.val;
+                    renderTable();
+                };
+            });
+            
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    curLev = e.target.dataset.val;
+                    renderTable();
+                };
+            });
+            
+            document.getElementById('searchBox').addEventListener('input', (e) => {
+                curSearch = e.target.value.toLowerCase();
+                renderTable();
+            });
+        });
+    </script>
+
+<!-- ── THEME TOGGLE ────────────────────────────────── -->
+<script>
+(function() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+  const icon = document.getElementById('theme-icon');
+
+  const MOON_PATH = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+  const SUN_PATH  = `<circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/>
+    <line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/>
+    <line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+
+  // Load saved preference
+  const saved = localStorage.getItem('atlas-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+  if (icon) icon.innerHTML = saved === 'dark' ? MOON_PATH : SUN_PATH;
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('atlas-theme', next);
+      window.dispatchEvent(new CustomEvent('atlas-theme-changed', { detail: next }));
+
+      if (icon) icon.innerHTML = next === 'dark' ? MOON_PATH : SUN_PATH;
+    });
+  }
+})();
+</script>
+</body>
+</html>

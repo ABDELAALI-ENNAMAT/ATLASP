@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATLAS - Anomaly Detection</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="/js/icons.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-label="ATLAS logo">
+      <rect width="32" height="32" rx="8" fill="var(--color-primary)" opacity="0.15"/>
+      <path d="M7 25 L16 7 L25 25" stroke="var(--color-primary)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="16" cy="21" r="2.5" fill="var(--color-primary)"/>
+      <path d="M11 25 L21 25" stroke="var(--color-primary)" stroke-width="2"
+            stroke-linecap="round" opacity="0.4"/>
+    </svg>
+    <div>
+      <div class="logo-text">ATLAS</div>
+      <div class="logo-sub">Risk Intelligence</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <!-- Analytics group -->
+    <div class="sidebar-label">Analytics</div>
+    <a href="/dashboard" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </a>
+    <a href="/heatmap" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="10" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="10" width="4" height="4"/><rect x="10" y="10" width="4" height="4"/><rect x="17" y="10" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/></svg>
+      Risk Heat Map
+    </a>
+    <a href="/register" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Risk Register
+    </a>
+
+    <!-- Finance group -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">Finance</div>
+    <a href="/exposure" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Financial Exposure
+    </a>
+    <a href="/anomalies" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+      Anomaly Detection
+    </a>
+
+    <!-- Audit group -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">Audit</div>
+    <a href="/gaps" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Control Gaps
+    </a>
+    <a href="/sampling" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>
+      Audit Sampling
+    </a>
+    <a href="/report" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+      Audit Report
+    </a>
+    <a href="/upload" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Data
+    </a>
+
+    <!-- Settings -->
+    <div class="sidebar-label" style="margin-top:var(--sp-4);">System</div>
+    <a href="/settings" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Configuration
+    </a>
+  </div>
+
+  <!-- User footer -->
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="user-avatar">IA</div>
+      <div>
+        <div class="user-name">Internal Auditor</div>
+        <div class="user-role">Meridian Cables Maroc SA · FY 2024</div>
+      </div>
+    </div>
+  </div>
+</aside>
+        
+        
+        
+
+        <div class="main-area">
+        <header class="topbar">
+          <div class="topbar-left">
+            <div class="status-dot"></div>
+            <span class="topbar-title">Anomaly Detection</span>
+          </div>
+          <div class="topbar-right">
+            <button class="btn btn-ghost btn-sm" onclick="window.location.href='/report'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export PDF
+            </button>
+            <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
+              <svg id="theme-icon" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div class="main-content">
+            <header class="page-header">
+                <div class="header-left">
+                    <div class="page-title">Anomaly Detection</div>
+                    <div class="header-meta">
+                        <div class="meta-pill"><div class="meta-dot"></div> Benford's Law · Chi-square test</div>
+                        <div class="meta-pill"><div class="meta-dot"></div> General Ledger · 2,500 transactions</div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="page-body">
+                <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                    <div class="card" style="flex: 2;">
+                        <div class="card-header" style="margin-bottom: 8px;">
+                            <h3>Benford's Law Analysis</h3>
+                            <span id="benfordStatus" class="badge"></span>
+                        </div>
+                        <div class="kpi-sub" style="margin-bottom: 16px;" id="benfordStats"></div>
+                        <div style="height: 260px;">
+                            <canvas id="benfordCanvas"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="flex: 1;">
+                        <div class="card-header"><h3>Detection Summary</h3></div>
+                        <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:34px;height:34px;border-radius:var(--radius-sm);background:var(--risk-critical-bg);display:flex;align-items:center;justify-content:center;"></div>
+                                <div style="flex:1;">
+                                    <div style="font-size: var(--text-sm); color:var(--text-secondary); font-weight:600;">Duplicate Payments Detected</div>
+                                    <div style="font-size:1.25rem; font-weight:700;" id="sum-dups">-</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:34px;height:34px;border-radius:var(--radius-sm);background:var(--risk-moderate-bg);display:flex;align-items:center;justify-content:center;"></div>
+                                <div style="flex:1;">
+                                    <div style="font-size: var(--text-sm); color:var(--text-secondary); font-weight:600;">Threshold Avoidance Trans.</div>
+                                    <div style="font-size:1.25rem; font-weight:700;" id="sum-thresh">-</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:34px;height:34px;border-radius:var(--radius-sm);background:var(--risk-high-bg);display:flex;align-items:center;justify-content:center;"></div>
+                                <div style="flex:1;">
+                                    <div style="font-size: var(--text-sm); color:var(--text-secondary); font-weight:600;">Benford Deviations</div>
+                                    <div style="font-size:1.25rem; font-weight:700;" id="sum-benford">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 24px; padding: 12px; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-default);">
+                            <div style="font-size: var(--text-sm); font-weight:600; margin-bottom:8px;">What these signals mean:</div>
+                            <div style="font-size: var(--text-xs); color:var(--text-secondary); line-height:1.4; margin-bottom:8px;">
+                                <strong>Duplicates:</strong> Identical payments to the same vendor within a short window indicating control failure.
+                            </div>
+                            <div style="font-size: var(--text-xs); color:var(--text-secondary); line-height:1.4; margin-bottom:8px;">
+                                <strong>Thresholds:</strong> Payments deliberately structured just below approval limits to bypass managerial scrutiny.
+                            </div>
+                            <div style="font-size: var(--text-xs); color:var(--text-secondary); line-height:1.4;">
+                                <strong>Benford:</strong> Statistical deviation in digit frequencies suggesting fabricated or anomalous amounts.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="padding: 0;">
+                    <div class="card-header" style="padding: 20px 24px 0;"><h3>Flagged Transactions</h3></div>
+                    <div id="anom-tabs" style="display: flex; gap: 24px; padding: 16px 24px 0; border-bottom: 1px solid var(--border-default);">
+                        <div id="tab-dups" onclick="switchTab('dups')" style="font-size: var(--text-base); font-weight: 600; color: var(--brand-primary); padding-bottom: 12px; border-bottom: 2px solid var(--brand-primary); cursor: pointer;">Duplicate Payments</div>
+                        <div id="tab-thresh" onclick="switchTab('thresh')" style="font-size: var(--text-base); font-weight: 500; color: var(--text-muted); padding-bottom: 12px; border-bottom: 2px solid transparent; cursor: pointer;">Threshold Avoidance</div>
+                    </div>
+                    <!-- Duplicate payments table -->
+                    <div id="panel-dups" class="table-wrapper" style="border: none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
+                        <table>
+                            <thead>
+                                <tr><th>#</th><th>Vendor</th><th>Amount (MAD)</th><th>Date 1</th><th>Date 2</th><th>Days Apart</th></tr>
+                            </thead>
+                            <tbody id="dupsTable"></tbody>
+                        </table>
+                    </div>
+                    <!-- Threshold avoidance table -->
+                    <div id="panel-thresh" class="table-wrapper" style="display:none; border: none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
+                        <table>
+                            <thead>
+                                <tr><th>#</th><th>Date</th><th>Vendor / Department</th><th>Amount (MAD)</th></tr>
+                            </thead>
+                            <tbody id="threshTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script>
+    function switchTab(tab) {
+        const isDups = (tab === 'dups');
+        // Toggle panels
+        document.getElementById('panel-dups').style.display   = isDups ? '' : 'none';
+        document.getElementById('panel-thresh').style.display = isDups ? 'none' : '';
+        // Update tab styles
+        const tDups   = document.getElementById('tab-dups');
+        const tThresh = document.getElementById('tab-thresh');
+        const activeStyle   = { color: 'var(--brand-primary)', fontWeight: '600', borderBottom: '2px solid var(--brand-primary)' };
+        const inactiveStyle = { color: 'var(--text-muted)',    fontWeight: '500', borderBottom: '2px solid transparent' };
+        Object.assign(tDups.style,   isDups ? activeStyle : inactiveStyle);
+        Object.assign(tThresh.style, isDups ? inactiveStyle : activeStyle);
+    }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const sid = new URLSearchParams(window.location.search).get('session_id') || localStorage.getItem('atlas-session-id') || '';
+            const data = await fetchAPI('/anomalies' + (sid ? `?session_id=${sid}` : ''));
+            if(!data) return;
+            
+            if(data.benford) {
+                const b = data.benford;
+                const badge = document.getElementById('benfordStatus');
+                if(b.p_value < 0.05) {
+                    badge.innerText = "ANOMALY DETECTED";
+                    badge.className = "badge badge-critical";
+                } else {
+                    badge.innerText = "NORMAL DISTRIBUTION";
+                    badge.className = "badge badge-low";
+                }
+                
+                document.getElementById('benfordStats').innerText = `Chi-square: ${b.chi_square} · p-value: ${b.p_value}`;
+                
+                let devCount = 0;
+                const bgColors = [];
+                const borderColors = [];
+                const borderWs = [];
+                
+                const bcs  = getComputedStyle(document.documentElement);
+                const bTeal   = bcs.getPropertyValue('--color-primary').trim();
+                const bOrange = bcs.getPropertyValue('--color-orange').trim();
+                const bRose   = bcs.getPropertyValue('--color-error').trim();
+                const bSurf   = bcs.getPropertyValue('--color-surface-dynamic').trim();
+                const bText   = bcs.getPropertyValue('--color-text-muted').trim();
+                const bBorder = bcs.getPropertyValue('--color-border').trim();
+                Chart.defaults.color       = bText;
+                Chart.defaults.borderColor = bBorder;
+
+                b.actual_frequencies.forEach((act, i) => {
+                    const exp = b.expected_frequencies[i];
+                    if(Math.abs(act - exp) > 2) {
+                        devCount++;
+                        bgColors.push(bOrange + 'cc');
+                        borderColors.push(bRose);
+                        borderWs.push(2);
+                    } else {
+                        bgColors.push(bTeal + 'aa');
+                        borderColors.push(bTeal);
+                        borderWs.push(1);
+                    }
+                });
+
+                document.getElementById('sum-benford').innerText = devCount;
+
+                new Chart(document.getElementById('benfordCanvas'), {
+                    type: 'bar',
+                    data: {
+                        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                        datasets: [
+                            {
+                                label: 'Actual Frequency (%)',
+                                data: b.actual_frequencies,
+                                backgroundColor: bgColors,
+                                borderColor: borderColors,
+                                borderWidth: borderWs,
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Expected Frequency (%)',
+                                data: b.expected_frequencies,
+                                backgroundColor: bSurf + '99',
+                                borderColor: bBorder,
+                                borderWidth: 1,
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { boxWidth: 12, padding: 16, color: bText }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { color: bBorder }, ticks: { color: bText } },
+                            y: { grid: { color: bBorder }, ticks: { color: bText } }
+                        }
+                    }
+                });
+            }
+            
+                if(data.anomalies) {
+                const dups = data.anomalies.duplicates || [];
+                const thresh = data.anomalies.avoidance_data || [];
+                document.getElementById('sum-dups').innerText = dups.length;
+                document.getElementById('sum-thresh').innerText = data.anomalies.threshold_avoidance || 0;
+
+                // Populate duplicate payments table
+                const tbody = document.getElementById('dupsTable');
+                dups.forEach((d, i) => {
+                    const tr = document.createElement('tr');
+                    const d1 = d.Date   ? new Date(d.Date).toLocaleDateString()   : '—';
+                    const d2 = d.Date_2 ? new Date(d.Date_2).toLocaleDateString() : '—';
+                    const amt = typeof d.Amount_MAD === 'number'
+                        ? d.Amount_MAD.toLocaleString('fr-MA', {minimumFractionDigits: 2}) : '—';
+                    tr.innerHTML = `
+                        <td style="font-family:'JetBrains Mono',monospace;color:var(--color-error);">${i+1}</td>
+                        <td style="font-weight:500;">${d.Vendor_Customer || '—'}</td>
+                        <td style="font-family:'JetBrains Mono',monospace;">${amt}</td>
+                        <td>${d1}</td>
+                        <td>${d2}</td>
+                        <td style="font-family:'JetBrains Mono',monospace;">${d.Days_Apart ?? '—'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Populate threshold avoidance table
+                const threshBody = document.getElementById('threshTable');
+                thresh.forEach((t, i) => {
+                    const tr = document.createElement('tr');
+                    const amt = typeof t.Amount_MAD === 'number'
+                        ? t.Amount_MAD.toLocaleString('fr-MA', {minimumFractionDigits: 2}) : '—';
+                    const dt = t.Date ? new Date(t.Date).toLocaleDateString() : '—';
+                    tr.innerHTML = `
+                        <td style="font-family:'JetBrains Mono',monospace;color:var(--color-warning);">${i+1}</td>
+                        <td>${dt}</td>
+                        <td style="font-weight:500;">${t.Vendor_Customer || t.Department || '—'}</td>
+                        <td style="font-family:'JetBrains Mono',monospace;">${amt}</td>
+                    `;
+                    threshBody.appendChild(tr);
+                });
+                }
+        });
+    </script>
+
+<!-- Chart theme live-update -->
+<script>
+window.addEventListener('atlas-theme-changed', () => {
+    const cs = getComputedStyle(document.documentElement);
+    const newText   = cs.getPropertyValue('--color-text-muted').trim();
+    const newBorder = cs.getPropertyValue('--color-border').trim();
+    Chart.helpers.each(Chart.instances, chart => {
+        chart.options.plugins.legend.labels.color = newText;
+        Object.values(chart.options.scales || {}).forEach(axis => {
+            if (axis.ticks)  axis.ticks.color  = newText;
+            if (axis.grid)   axis.grid.color   = newBorder;
+        });
+        chart.update('none');
+    });
+});
+</script>
+
+<!-- ── THEME TOGGLE ────────────────────────────────── -->
+<script>
+(function() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+  const icon = document.getElementById('theme-icon');
+
+  const MOON_PATH = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+  const SUN_PATH  = `<circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/>
+    <line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/>
+    <line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+
+  // Load saved preference
+  const saved = localStorage.getItem('atlas-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+  if (icon) icon.innerHTML = saved === 'dark' ? MOON_PATH : SUN_PATH;
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('atlas-theme', next);
+      window.dispatchEvent(new CustomEvent('atlas-theme-changed', { detail: next }));
+
+      if (icon) icon.innerHTML = next === 'dark' ? MOON_PATH : SUN_PATH;
+    });
+  }
+})();
+</script>
+</body>
+</html>
